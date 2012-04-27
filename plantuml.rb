@@ -16,20 +16,20 @@ module Jekyll
     def render(context)
       output = super
       code = super.join
-      puts code
 
       site = context.registers[:site]
       folder = "/images/plantuml/"
+      cmd = "mkdir -p " + site.dest + folder
+      puts "Create PlantUML image path:\n\t" + cmd
+      stdout, stderr, status = Open3.capture3(cmd)
+      puts "status -->\t" + status + "\n" + "stdout -->\t" + result + "\n" + "stderr -->\t" + error
+
       filepath = folder + Digest::MD5.hexdigest(code) + ".png"
       plantuml_jar = File.expand_path(site.config['plantuml_jar'])
       cmd = "java -jar " + plantuml_jar + " -pipe > " + File.join(site.dest, filepath)
-      puts "Generate PlantUML image: \n\t" + cmd
-      exec "mkdir -p " + site.dest + folder
-      stdin, stdout, stderr = Open3.popen3('java -jar plantuml.jar -pipe > somefile.png ')
-      stdin.puts(code)
-      stdin.close()
-      result = stdout.gets
-      puts "\t -> " + result
+      puts "Generate PlantUML image:\n\t" + cmd
+      stdout, stderr, status = Open3.capture3(cmd, :stdin_data=>code)
+      puts "status -->\t" + status + "\n" + "stdout -->\t" + result + "\n" + "stderr -->\t" + error
 
       source = "<figure class='code'>"
       source += "<img src='" + filepath + "'>"
