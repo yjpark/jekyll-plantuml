@@ -12,6 +12,12 @@ require './plugins/raw'
 
 module Jekyll
 
+  class PlantUMLFile < StaticFile
+    def write(dest)
+      true
+    end
+  end
+
   class PlantUMLBlock < Liquid::Block
     def render(context)
       output = super
@@ -21,19 +27,21 @@ module Jekyll
       folder = "/images/plantuml/"
       cmd = "mkdir -p " + site.dest + folder
       puts "Create PlantUML image path:\n\t" + cmd
-      stdout, stderr, status = Open3.capture3(cmd)
-      puts "status -->\t" + status + "\n" + "stdout -->\t" + result + "\n" + "stderr -->\t" + error
+      result, status = Open3.capture2e(cmd)
+      puts "  -->\t" + status.inspect() + "\t" + result
 
-      filepath = folder + Digest::MD5.hexdigest(code) + ".png"
+      filename = Digest::MD5.hexdigest(code) + ".png"
       plantuml_jar = File.expand_path(site.config['plantuml_jar'])
-      cmd = "java -jar " + plantuml_jar + " -pipe > " + File.join(site.dest, filepath)
+      cmd = "java -jar " + plantuml_jar + " -pipe > " + site.dest + folder + filename
       puts "Generate PlantUML image:\n\t" + cmd
-      stdout, stderr, status = Open3.capture3(cmd, :stdin_data=>code)
-      puts "status -->\t" + status + "\n" + "stdout -->\t" + result + "\n" + "stderr -->\t" + error
+      result, status = Open3.capture2e(cmd, :stdin_data=>code)
+      puts "  -->\t" + status.inspect() + "\t" + result
 
-      source = "<figure class='code'>"
-      source += "<img src='" + filepath + "'>"
-      source += "</figure>"
+      site.static_files << Jekyll::PlantUMLFile.new(site, site.dest, folder, filename)
+
+      source = "<figure class='code'><center>"
+      source += "<img src='" + folder + filename + "'>"
+      source += "</center></figure>"
       source
     end
   end
