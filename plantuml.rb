@@ -20,10 +20,18 @@ module Jekyll
 
   class PlantUMLBlock < Liquid::Block
     def render(context)
+      site = context.registers[:site]
+
       output = super
       code = super.join
 
-      site = context.registers[:site]
+      puts "\nPlantUML configuration:"
+      if !site.config['plantuml_background_color'].nil?
+        background_color = "skinparam backgroundColor " + site.config["plantuml_background_color"]
+        puts "\tbackgroud_color = " + background_color
+        code = background_color + code
+      end
+
       folder = "/images/plantuml/"
       cmd = "mkdir -p " + site.dest + folder
       puts "Create PlantUML image path:\n\t" + cmd
@@ -34,14 +42,15 @@ module Jekyll
       plantuml_jar = File.expand_path(site.config['plantuml_jar'])
       cmd = "java -jar " + plantuml_jar + " -pipe > " + site.dest + folder + filename
       puts "Generate PlantUML image:\n\t" + cmd
+
       result, status = Open3.capture2e(cmd, :stdin_data=>code)
       puts "  -->\t" + status.inspect() + "\t" + result
 
       site.static_files << Jekyll::PlantUMLFile.new(site, site.dest, folder, filename)
 
-      source = "<figure class='code'><center>"
+      source = "<center>"
       source += "<img src='" + folder + filename + "'>"
-      source += "</center></figure>"
+      source += "</center>"
       source
     end
   end
