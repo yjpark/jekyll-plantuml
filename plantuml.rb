@@ -33,18 +33,27 @@ module Jekyll
       end
 
       folder = "/images/plantuml/"
-      cmd = "mkdir -p " + site.dest + folder
-      puts "Create PlantUML image path:\n\t" + cmd
-      result, status = Open3.capture2e(cmd)
-      puts "  -->\t" + status.inspect() + "\t" + result
+      folderpath = site.dest + folder
+      if File.exist?(folderpath)
+        puts "PlantUML image path already exist.\n"
+      else
+        cmd = "mkdir -p " + folderpath
+        puts "Create PlantUML image path:\n\t" + cmd
+        result, status = Open3.capture2e(cmd)
+        puts "  -->\t" + status.inspect() + "\t" + result
+      end
 
       filename = Digest::MD5.hexdigest(code) + ".png"
       plantuml_jar = File.expand_path(site.config['plantuml_jar'])
-      cmd = "java -jar " + plantuml_jar + " -pipe > " + site.dest + folder + filename
-      puts "Generate PlantUML image:\n\t" + cmd
+      filepath = site.dest + folder + filename
+      if File.exist?(filepath)
+        puts "PlantUML image already exist: " + filepath + "\n"
+      else
+        cmd = "java -jar " + plantuml_jar + " -pipe > " + filepath
 
-      result, status = Open3.capture2e(cmd, :stdin_data=>code)
-      puts "  -->\t" + status.inspect() + "\t" + result
+        result, status = Open3.capture2e(cmd, :stdin_data=>code)
+        puts "  -->\t" + status.inspect() + "\t" + result
+      end
 
       site.static_files << Jekyll::PlantUMLFile.new(site, site.dest, folder, filename)
 
