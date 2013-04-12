@@ -8,6 +8,7 @@
 # plantuml code
 # {% endplantuml %}
 #
+require 'open3'
 require './plugins/raw'
 
 module Jekyll
@@ -22,8 +23,7 @@ module Jekyll
     def render(context)
       site = context.registers[:site]
 
-      output = super
-      code = super.join
+      code = @nodelist.join
 
       puts "\nPlantUML configuration:"
       if !site.config['plantuml_background_color'].nil?
