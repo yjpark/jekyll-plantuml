@@ -1,5 +1,5 @@
-jekyll-plantuml
 ===============
+jekyll-plantuml
 
 Background
 ----------
@@ -14,16 +14,23 @@ Background
 
 I really like the idea of writing UML diagram with plain text, and the syntax of it is very well designed, so I use PlantUML with trac and sphinx. After switching [Octopress](http://octopress.org/) to my blog platform, I was looking for a way to integrate PlantUML within it, though I can't find one, so I wrote this very simple jekyll plugin (Octopress is based on [Jekyll](http://jekyllrb.com/)).
 
+
+Installation
+------------
+To use with Octopress, you need to put the plantuml.rb under the plugins folder, or you can use git's submodules to add jekyll-plantuml under plugins folder.
+
+
 Configuration
 -------------
 You need to download the plantuml.jar file from http://plantuml.sourceforge.net/download.html
 
-In your \_config.xml, setup plantuml\_jar to the downloaded jar file, e.g.
+In your \_config.yml, setup plantuml\_jar to the downloaded jar file, e.g.
 
 ```
 plantuml_jar: ../_lib/plantuml.jar
 plantuml_background_color: "#f8f8f8"
 ```
+
 
 The plantuml_background_color is optional, which will change the background of the generated diagram.
 

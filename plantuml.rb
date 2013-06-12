@@ -28,7 +28,7 @@ module Jekyll
       puts "\nPlantUML configuration:"
       if !site.config['plantuml_background_color'].nil?
         background_color = "skinparam backgroundColor " + site.config["plantuml_background_color"]
-        puts "\tbackgroud_color = " + background_color
+        puts "\tbackground_color = " + background_color
         code = background_color + code
       end
 
