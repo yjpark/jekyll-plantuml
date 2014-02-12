@@ -43,13 +43,22 @@ module Jekyll
         puts "  -->\t" + status.inspect() + "\t" + result
       end
 
+      dotpath = site.config['plantuml_dotpath']
+      puts "using dot at: " + dotpath + "\n"
+      if File.exist?(dotpath)
+        puts "PlantUML set dot path:" + dotpath + "\n"
+        dotcmd = " -graphvizdot " + dotpath
+      else 
+        dotcmd = ""
+      end
+
       filename = Digest::MD5.hexdigest(code) + ".png"
       plantuml_jar = File.expand_path(site.config['plantuml_jar'])
       filepath = site.dest + folder + filename
       if File.exist?(filepath)
         puts "PlantUML image already exist: " + filepath + "\n"
       else
-        cmd = "java -jar " + plantuml_jar + " -pipe > " + filepath
+        cmd = "java -jar " + plantuml_jar + " -pipe > " + filepath + dotcmd
 
         result, status = Open3.capture2e(cmd, :stdin_data=>code)
         puts "  -->\t" + status.inspect() + "\t" + result
