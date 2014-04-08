@@ -66,10 +66,7 @@ module Jekyll
 
       site.static_files << Jekyll::PlantUMLFile.new(site, site.dest, folder, filename)
 
-      source = "<center>"
-      source += "<img src='" + folder + filename + "'>"
-      source += "</center>"
-      source
+      source = "<img src='" + folder + filename + "'>"
     end
   end
 end
