@@ -1,5 +1,5 @@
-===============
 jekyll-plantuml
+===============
 
 Background
 ----------
@@ -17,22 +17,30 @@ I really like the idea of writing UML diagram with plain text, and the syntax of
 
 Installation
 ------------
-To use with Octopress, you need to put the plantuml.rb under the plugins folder, or you can use git's submodules to add jekyll-plantuml under plugins folder.
 
+To use with Octopress, you need to put the `plantuml.rb` under the `plugins` folder, or you can use git's submodules to add jekyll-plantuml under `plugins` folder.
+
+You need to download the `plantuml.jar` file from http://plantuml.sourceforge.net/download.html
+
+If you use jekyll-plantuml to generate any UML diagrams other than sequence diagram, you have to install [Graphviz](http://www.graphviz.org/) as well. Only the `dot` command is used.
+
+### Additional steps to install on Jekyll
+
+jekyll-plantuml depends on Octopress's raw plugin. Copy it from [Octopress](https://github.com/imathis/octopress/tree/master/plugins) and put into Jekyll's `_plugins` folder. 
+
+Octopress plugin folder is `plugins` while Jekyll is `_plugins`. Modify `plantuml.rb` to set correct path for `require` method.  
 
 Configuration
 -------------
-You need to download the plantuml.jar file from http://plantuml.sourceforge.net/download.html
-
-In your \_config.yml, setup plantuml\_jar to the downloaded jar file, e.g.
+Add below configurations into `_config.yml`:
 
 ```
-plantuml_jar: ../_lib/plantuml.jar
-plantuml_background_color: "#f8f8f8"
+plantuml:
+  plantuml_jar: _bin/plantuml.jar     # path to plantuml jar
+  tmp_folder: _plantuml               # tmp folder to put generated image files
+  dot_exe: _bin/dot.exe               # [optional] path to Graphviz dot execution
+  background_color: white             # [optional] UML image background color
 ```
-
-
-The plantuml_background_color is optional, which will change the background of the generated diagram.
 
 Usage
 -----
