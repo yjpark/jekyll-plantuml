@@ -44,8 +44,7 @@ module Jekyll
       end
 
       dotpath = site.config['plantuml_dotpath']
-      puts "using dot at: " + dotpath + "\n"
-      if File.exist?(dotpath)
+      if dotpath and File.exist?(dotpath)
         puts "PlantUML set dot path:" + dotpath + "\n"
         dotcmd = " -graphvizdot " + dotpath
       else 
