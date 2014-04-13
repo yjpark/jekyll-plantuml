@@ -10,65 +10,54 @@
 #
 require 'open3'
 require './plugins/raw'
+require 'fileutils'
 
 module Jekyll
-
-  class PlantUMLFile < StaticFile
-    def write(dest)
-      true
-    end
-  end
 
   class PlantUMLBlock < Liquid::Block
     def render(context)
       site = context.registers[:site]
-
+      config = site.config['plantuml']
       code = @nodelist.join
 
       puts "\nPlantUML configuration:"
-      if !site.config['plantuml_background_color'].nil?
-        background_color = "skinparam backgroundColor " + site.config["plantuml_background_color"]
+      if !config['background_color'].nil?
+        background_color = "skinparam backgroundColor " + config['background_color']
         puts "\tbackground_color = " + background_color
         code = background_color + code
       end
 
+      tmproot = File.expand_path(config['tmp_folder'])
       folder = "/images/plantuml/"
-      folderpath = site.dest + folder
-      if File.exist?(folderpath)
-        puts "PlantUML image path already exist.\n"
-      else
-        cmd = "mkdir -p " + folderpath
-        puts "Create PlantUML image path:\n\t" + cmd
-        result, status = Open3.capture2e(cmd)
-        puts "  -->\t" + status.inspect() + "\t" + result
+      folderpath = tmproot + folder
+      if !File.exist?(folderpath)
+        FileUtils::mkdir_p folderpath
+        puts "Create PlantUML image folder: " + folderpath + "\n"
       end
 
-      dotpath = site.config['plantuml_dotpath']
-      if dotpath and File.exist?(dotpath)
-        puts "PlantUML set dot path:" + dotpath + "\n"
-        dotcmd = " -graphvizdot " + dotpath
-      else 
-        dotcmd = ""
+      dotcmd = ""
+      if !config['dot_exe'].nil?
+        dotpath = File.expand_path(config['dot_exe'])
+        if File.exist?(dotpath)
+          puts "Use graphviz dot: " + dotpath + "\n"
+          dotcmd = " -graphvizdot " + dotpath
+        end
       end
 
       filename = Digest::MD5.hexdigest(code) + ".png"
-      plantuml_jar = File.expand_path(site.config['plantuml_jar'])
-      filepath = site.dest + folder + filename
+      filepath = tmproot + folder + filename
       if File.exist?(filepath)
         puts "PlantUML image already exist: " + filepath + "\n"
       else
-        cmd = "java -jar " + plantuml_jar + " -pipe > " + filepath + dotcmd
-
+        plantuml_jar = File.expand_path(config['plantuml_jar'])
+        cmd = "java -jar " + plantuml_jar + dotcmd + " -pipe > " + filepath
         result, status = Open3.capture2e(cmd, :stdin_data=>code)
-        puts "  -->\t" + status.inspect() + "\t" + result
+        puts filepath + " -->\t" + status.inspect() + "\t" + result
       end
 
-      site.static_files << Jekyll::PlantUMLFile.new(site, site.dest, folder, filename)
+      site.static_files << Jekyll::StaticFile.new(site, tmproot, folder, filename)
 
-      source = "<center>"
-      source += "<img src='" + folder + filename + "'>"
-      source += "</center>"
-      source
+      source = "<img src='" + folder + filename + "'>"
     end
   end
 end
