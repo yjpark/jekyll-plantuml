@@ -43,7 +43,7 @@ module Jekyll
           dotcmd = " -graphvizdot " + dotpath
         end
       end
-
+      
       filename = Digest::MD5.hexdigest(code) + ".png"
       filepath = tmproot + folder + filename
       if File.exist?(filepath)
