@@ -35,14 +35,15 @@ module Jekyll
         puts "Create PlantUML image folder: " + folderpath + "\n"
       end
 
-      dotpath = File.expand_path(config['dot_exe'])
-      if File.exist?(dotpath)
-        puts "Use graphviz dot: " + dotpath + "\n"
-        dotcmd = " -graphvizdot " + dotpath
-      else 
-        dotcmd = ""
+      dotcmd = ""
+      if !config['dot_exe'].nil?
+        dotpath = File.expand_path(config['dot_exe'])
+        if File.exist?(dotpath)
+          puts "Use graphviz dot: " + dotpath + "\n"
+          dotcmd = " -graphvizdot " + dotpath
+        end
       end
-
+      
       filename = Digest::MD5.hexdigest(code) + ".png"
       filepath = tmproot + folder + filename
       if File.exist?(filepath)
