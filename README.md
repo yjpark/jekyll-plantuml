@@ -40,7 +40,7 @@ Add below configurations into `_config.yml`:
 plantuml:
   plantuml_jar: _bin/plantuml.jar     # path to plantuml jar
   tmp_folder: _plantuml               # tmp folder to put generated image files
-  dot_exe: _bin/dot.exe               # [optional] path to Graphviz dot execution
+  dot_exe: c:/graphviz/bin/dot.exe    # [optional] path to Graphviz dot execution
   background_color: white             # [optional] UML image background color
 ```
 

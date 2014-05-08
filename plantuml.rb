@@ -43,14 +43,14 @@ module Jekyll
           dotcmd = " -graphvizdot " + dotpath
         end
       end
-
+      
       filename = Digest::MD5.hexdigest(code) + ".png"
       filepath = tmproot + folder + filename
       if File.exist?(filepath)
         puts "PlantUML image already exist: " + filepath + "\n"
       else
         plantuml_jar = File.expand_path(config['plantuml_jar'])
-        cmd = "java -jar " + plantuml_jar + dotcmd + " -pipe > " + filepath
+        cmd = "java -Djava.awt.headless=true -jar " + plantuml_jar + dotcmd + " -pipe > " + filepath
         result, status = Open3.capture2e(cmd, :stdin_data=>code)
         puts filepath + " -->\t" + status.inspect() + "\t" + result
       end
