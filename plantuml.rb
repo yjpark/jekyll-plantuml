@@ -1,7 +1,7 @@
 # Title: PlantUML Code Blocks for Jekyll
 # Author: YJ Park (yjpark@gmail.com) 
 # https://github.com/yjpark/jekyll-plantuml
-# Description: Integrate PlantUML intu Jekyll and Octopress.
+# Description: Integrate PlantUML into Jekyll and Octopress.
 #
 # Syntax:
 # {% plantuml %}
@@ -20,10 +20,8 @@ module Jekyll
       config = site.config['plantuml']
       code = @nodelist.join
 
-      puts "\nPlantUML configuration:"
       if !config['background_color'].nil?
         background_color = "skinparam backgroundColor " + config['background_color']
-        puts "\tbackground_color = " + background_color
         code = background_color + code
       end
 
@@ -46,9 +44,7 @@ module Jekyll
       
       filename = Digest::MD5.hexdigest(code) + ".png"
       filepath = tmproot + folder + filename
-      if File.exist?(filepath)
-        puts "PlantUML image already exist: " + filepath + "\n"
-      else
+      if !File.exist?(filepath)
         plantuml_jar = File.expand_path(config['plantuml_jar'])
         cmd = "java -Djava.awt.headless=true -jar " + plantuml_jar + dotcmd + " -pipe > " + filepath
         result, status = Open3.capture2e(cmd, :stdin_data=>code)
