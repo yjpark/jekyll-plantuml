@@ -24,14 +24,6 @@ You need to download the `plantuml.jar` file from http://plantuml.sourceforge.ne
 
 If you use jekyll-plantuml to generate any UML diagrams other than sequence diagram, you have to install [Graphviz](http://www.graphviz.org/) as well. Only the `dot` command is used.
 
-### Additional steps to install on Jekyll
-
-jekyll-plantuml depends on Octopress's raw plugin. Copy it from [Octopress](https://github.com/imathis/octopress/tree/master/plugins) and put into Jekyll's `_plugins` folder. 
-
-Octopress plugin folder is `plugins` while Jekyll is `_plugins`. Modify `plantuml.rb` to set correct path for `require` method.
-
-You might also need to add a line `require 'digest'` into `plantuml.rb` if you saw error.
-
 Configuration
 -------------
 Add below configurations into `_config.yml`:
