@@ -59,7 +59,7 @@ module Jekyll
     
     def dot_cmd
       @dot_cmd ||= begin
-        dotpath = File.expand_path(config['dot_exe'] || '')
+        dotpath = File.expand_path(config['dot_exe'] || '__NULL__')
         if File.exist?(dotpath)
           Jekyll.logger.info("PlantUML: Use graphviz dot: " + dotpath)
           " -graphvizdot " + dotpath
